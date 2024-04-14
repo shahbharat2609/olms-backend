@@ -21,7 +21,6 @@ const userSchema = new mongoose.Schema({
   },
   company: {
     type: String,
-    required: true,
   },
   isAdmin: {
     type: Boolean,
