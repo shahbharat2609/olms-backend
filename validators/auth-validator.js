@@ -22,8 +22,16 @@ const signupSchema = z.object({
   password: z
     .string({ required_error: "Password is required" })
     .trim()
-    .min(7, { message: "Password must be at least 7 characters" })
-    .max(255, { message: "Password can't be greater than 255 characters" }),
+    .min(7, { message: "Password must be at least 8 characters" })
+    .max(255, { message: "Password can't be greater than 32 characters" }),
+
+  companyName: z
+    .string({ required_error: "Company name is required" })
+    .trim()
+    .min(3, { message: "Company name must be at least 3 characters" })
+    .max(50, { message: "Company name must be less than 50 characters" }),
+
+  roles: z.string({ required_error: "Role is required" }).trim(),
 });
 
 const loginSchema = z.object({
@@ -35,8 +43,8 @@ const loginSchema = z.object({
   password: z
     .string({ required_error: "Password is required" })
     .trim()
-    .min(7, { message: "Password must be at least 7 characters" })
-    .max(255, { message: "Password can't be greater than 255 characters" }),
+    .min(7, { message: "Password must be at least 8 characters" })
+    .max(255, { message: "Password can't be greater than 32 characters" }),
 });
 
 export { signupSchema, loginSchema };

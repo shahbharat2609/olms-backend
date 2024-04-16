@@ -1,5 +1,4 @@
 import User from "../models/user-model.js";
-import bcrypt from "bcryptjs";
 
 // ---------HOME CONTROLLER-----------
 const home = async (_req, res) => {
@@ -15,7 +14,7 @@ const register = async (req, res) => {
   try {
     const post = req.body;
 
-    console.log("POST", req.body);
+    console.log("✅✅✅", req.body);
 
     const userExist = await User.findOne({ email: post.email });
 

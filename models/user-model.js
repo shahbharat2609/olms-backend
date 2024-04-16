@@ -21,14 +21,11 @@ const userSchema = new mongoose.Schema({
   },
   companyName: {
     type: String,
-  },
-  isAdmin: {
-    type: Boolean,
-    default: false,
+    required: true,
   },
   roles: {
-    type: [String],
-    enum: ["shipper", "dispatcher", "admin"],
+    type: String,
+    required: true,
   },
 });
 
