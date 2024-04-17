@@ -50,11 +50,15 @@ const login = async (req, res) => {
     const isValidUser = await userExist.comparePassword(post.password);
 
     if (isValidUser) {
-      res.status(200).json({
+      const roles = userExist.roles;
+
+      const responseData = {
         msg: "Login Successful",
         token: await userExist.generateToken(),
         userId: userExist._id.toString(),
-      });
+        roles: roles,
+      };
+      res.status(200).json(responseData);
     } else {
       res.status(401).json({ msg: "Invalid e-mail or password" });
     }
