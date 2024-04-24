@@ -51,7 +51,7 @@ userSchema.methods.generateToken = async function () {
       {
         userId: this._id.toString(),
         email: this.email,
-        isAdmin: this.isAdmin,
+        roles: this.roles,
       },
       process.env.JWT_SECRET_KEY,
       {
