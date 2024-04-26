@@ -4,6 +4,6 @@ import contactForm from "../controllers/contact-controller.js";
 
 const router = express.Router();
 
-router.route("/contact").post(contactForm, authenticateToken);
+router.route("/contact").post(authenticateToken, contactForm);
 
 export default router;

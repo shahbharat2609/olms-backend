@@ -25,7 +25,7 @@ const signupSchema = z.object({
     .min(7, { message: "Password must be at least 8 characters" })
     .max(255, { message: "Password can't be greater than 32 characters" }),
 
-  companyName: z
+  address: z
     .string({ required_error: "Company name is required" })
     .trim()
     .min(3, { message: "Company name must be at least 3 characters" })
