@@ -9,7 +9,7 @@ const shipmentSchema = new mongoose.Schema({
         type: String,
         required: true
     },
-    shipmentDetails: {
+    shipmentType: {
         type: String,
         required: true
     },

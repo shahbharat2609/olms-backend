@@ -16,6 +16,7 @@ app.use(cors());
 app.get("/", () => {
   console.log("WELCOME TO BACKEND");
 });
+
 app.use("/api/auth", authRoute);
 app.use("/api/form", contactRoute);
 app.use("/api/shipper", shipmentRoute);
