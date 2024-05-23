@@ -7,7 +7,7 @@ const carrierDashboard = async (req, res) => {
     await CarrierDashboard.create(post);
     return res
       .status(200)
-      .json({ msg: "Data added successfully", carrierDashboard: post });
+      .json({ msg: "Data fetched successfully", carrierDashboard: post });
   } catch (error) {
     res.status(500).json({ msg: "Error in fetching carrierDashboard data" });
   }

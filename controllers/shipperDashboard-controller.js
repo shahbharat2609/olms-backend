@@ -7,7 +7,7 @@ const shipperDashboard = async (req, res) => {
     await ShipperDashboard.create(post);
     return res
       .status(200)
-      .json({ msg: "Data added successfully", shipperDashboard: post });
+      .json({ msg: "Data fetched successfully", shipperDashboard: post });
   } catch (error) {
     res.status(500).json({ msg: "Error in fetching shipperDashboard data" });
   }

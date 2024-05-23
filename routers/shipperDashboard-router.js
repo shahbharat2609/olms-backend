@@ -4,6 +4,6 @@ import authenticateToken from "../middlewares/jwt-middleware.js";
 
 const router = express.Router();
 
-router.route("/shipperDashboard").post(authenticateToken, shipperDashboard);
+router.route("/shipperDashboard").get(authenticateToken, shipperDashboard);
 
 export default router;

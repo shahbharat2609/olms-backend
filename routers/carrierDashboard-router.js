@@ -4,6 +4,6 @@ import authenticateToken from "../middlewares/jwt-middleware.js";
 
 const router = express.Router();
 
-router.route("/carrierDashboard").post(authenticateToken, carrierDashboard);
+router.route("/carrierDashboard").get(authenticateToken, carrierDashboard);
 
 export default router;
