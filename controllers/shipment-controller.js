@@ -5,7 +5,7 @@ const shipmentDetails = async (req, res) => {
     const postData = req.body;
     console.log("✅ Received shipment details ✅:", postData);
     const newShipment = await Shipment.create(postData);
-    return res.status(201).json({     
+    return res.status(201).json({
       msg: "Shipment details added successfully",
       shipment: newShipment,
     });
