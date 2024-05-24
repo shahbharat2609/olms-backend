@@ -2,7 +2,7 @@ import ShipperDashboard from "../models/shipperDashboard-model.js";
 
 const shipperDashboard = async (req, res) => {
   try {
-    let data = await ShipperDashboard.find();
+    let data = await ShipperDashboard.findById(req.body._id);
     return res
       .status(200)
       .json({ msg: "Data fetched successfully", shipperDashboard: data });

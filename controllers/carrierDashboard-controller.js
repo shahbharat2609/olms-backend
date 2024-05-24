@@ -2,7 +2,7 @@ import CarrierDashboard from "../models/carrierDashboard-model.js";
 
 const carrierDashboard = async (req, res) => {
   try {
-    let data = await CarrierDashboard.find();
+    let data = await CarrierDashboard.findById(req.body._id);
     return res
       .status(200)
       .json({ msg: "Data fetched successfully", carrierDashboard: data });
