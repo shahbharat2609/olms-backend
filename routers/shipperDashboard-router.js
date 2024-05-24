@@ -1,9 +1,13 @@
 import express from "express";
-import shipperDashboard from "../controllers/shipperDashboard-controller.js";
+import {
+  postShipper,
+  shipperDashboard,
+} from "../controllers/shipperDashboard-controller.js";
 import authenticateToken from "../middlewares/jwt-middleware.js";
 
 const router = express.Router();
 
-router.route("/shipperDashboard").get(authenticateToken, shipperDashboard);
+router.route("/postShipper").post(authenticateToken, postShipper);
+router.route("/shipperDashboard/:_id").get(authenticateToken, shipperDashboard);
 
 export default router;

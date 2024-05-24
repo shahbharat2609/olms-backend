@@ -2,20 +2,24 @@ import "dotenv/config";
 import express from "express";
 import authRoute from "./routers/auth-router.js";
 import contactRoute from "./routers/contact-router.js";
-import shipmentRoute from "./routers/shipment-router.js";
 import carrierDashboard from "./routers/carrierDashboard-router.js";
 import shipperDashboard from "./routers/shipperDashboard-router.js";
 import colors from "colors";
 
 import connectDb from "./utils/db.js";
 import cors from "cors";
+import cookieParser from "cookie-parser";
 
 const app = express();
 
 const PORT = process.env.PORT || 3000;
 app.use(express.json());
+app.use(cookieParser());
 app.use(express.urlencoded({ extended: true }));
-app.use(cors());
+var corsOptions = {
+  origin: 'http://localhost:5173',
+  credentials: true };
+app.use(cors(corsOptions));
 
 app.get("/", () => {
   console.log("WELCOME TO BACKEND");
@@ -23,7 +27,6 @@ app.get("/", () => {
 
 app.use("/api/auth", authRoute);
 app.use("/api/form", contactRoute);
-app.use("/api/shipper", shipmentRoute);
 app.use("/api/dashboard", carrierDashboard);
 app.use("/api/dashboard", shipperDashboard);
 

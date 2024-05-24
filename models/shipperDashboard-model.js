@@ -45,6 +45,10 @@ const shipperDashboardSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
+  shipperId: {
+    type: String,
+    required: true,
+  }
 });
 
 const ShipperDashboard = mongoose.model(
