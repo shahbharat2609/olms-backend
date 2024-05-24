@@ -4,7 +4,8 @@ import authRoute from "./routers/auth-router.js";
 import contactRoute from "./routers/contact-router.js";
 import shipmentRoute from "./routers/shipment-router.js";
 import carrierDashboard from "./routers/carrierDashboard-router.js";
-import shipperDashboard from "./routers/shipperDashboard-router.js"
+import shipperDashboard from "./routers/shipperDashboard-router.js";
+import colors from "colors";
 
 import connectDb from "./utils/db.js";
 import cors from "cors";
@@ -28,6 +29,8 @@ app.use("/api/dashboard", shipperDashboard);
 
 connectDb().then(() => {
   app.listen(PORT, () => {
-    console.log(`✅ Server is running on http://localhost:${PORT} ✅`);
+    console.log(
+      `✅ Server is running on http://localhost:${PORT} ✅`.rainbow.bold
+    );
   });
 });
