@@ -3,6 +3,7 @@ import express from "express";
 import authRoute from "./routers/auth-router.js";
 import contactRoute from "./routers/contact-router.js";
 import shipmentRoute from "./routers/shipment-router.js";
+import cookieParser from "cookie-parser";
 import colors from "colors";
 
 import connectDb from "./utils/db.js";
@@ -11,9 +12,14 @@ import cors from "cors";
 const app = express();
 
 const PORT = process.env.PORT || 3000;
+const corsOptions = {
+  origin: "http://localhost:5173",
+  credentials: true,
+};
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-app.use(cors());
+app.use(cors(corsOptions));
+app.use(cookieParser());
 
 app.get("/", () => {
   console.log("WELCOME TO BACKEND");

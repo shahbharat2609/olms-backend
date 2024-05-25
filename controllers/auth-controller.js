@@ -17,12 +17,12 @@ const register = async (req, res) => {
     console.log("✅✅✅", req.body);
 
     const userExist = await User.findOne({ email: post.email });
-    const jwt = await userCreated.generateToken();
-
+    
     if (userExist) {
       return res.status(400).json({ msg: "User already exists" });
     }
     const userCreated = await User.create(post);
+    const jwt = await userCreated.generateToken();
     res.cookie("jwt", jwt, { maxAge: 36000, httpOnly: true });
 
     res.status(201).json({

@@ -1,13 +1,10 @@
 import Shipment from "../models/shipment-model.js";
+import User from "../models/user-model.js";
 
 const shipperShipmentData = async (req, res) => {
   try {
     let {
       shipperId,
-      shipperName,
-      shipperEmail,
-      shipperPhone,
-      shipperAddress,
       origin,
       destination,
       shipmentType,
@@ -17,20 +14,23 @@ const shipperShipmentData = async (req, res) => {
       addDetails,
     } = req.body;
 
-    let newShipment = await Shipment.create({
-      shipperId,
-      shipperName,
-      shipperEmail,
-      shipperPhone,
-      shipperAddress,
-      origin,
-      destination,
-      shipmentType,
-      shipmentWeightVolume,
-      pickupDateTime,
-      deliveryDateTime,
-      addDetails,
-    });
+    const { username, email, address, phone } = await User.findById(shipperId);
+    const shipmentData = {
+      shipperId: shipperId,
+      shipperName: username,
+      shipperPhone: phone,
+      shipperEmail: email,
+      shipperAddress: address,
+      origin: origin,
+      destination: destination,
+      shipmentType: shipmentType,
+      shipmentWeightVolume: shipmentWeightVolume,
+      pickupDateTime: pickupDateTime,
+      deliveryDateTime: deliveryDateTime,
+      addDetails: addDetails,
+    };
+
+    await Shipment.create(shipmentData);
 
     return res.status(201).json({
       msg: "Shipment details added successfully",
@@ -46,15 +46,12 @@ const shipperShipmentData = async (req, res) => {
 const carrierBidData = async (req, res) => {
   try {
     let {
+      userId,
       shipperId,
       shipperName,
       shipperEmail,
       shipperPhone,
       shipperAddress,
-      carrierName,
-      carrierEmail,
-      carrierPhone,
-      carrierAddress,
       origin,
       destination,
       shipmentType,
@@ -64,28 +61,43 @@ const carrierBidData = async (req, res) => {
       addDetails,
       bidAmount,
     } = req.body;
-    let loadData = await Shipment.create({
-      shipperId,
-      shipperName,
-      shipperEmail,
-      shipperPhone,
-      shipperAddress,
-      carrierName,
-      carrierEmail,
-      carrierPhone,
-      carrierAddress,
-      origin,
-      destination,
-      shipmentType,
-      shipmentWeightVolume,
-      pickupDateTime,
-      deliveryDateTime,
-      addDetails,
-      bidAmount,
-    });
-    return res.status(200).json({
-      msg: "carrierBidData added successfully",
-    });
+    const { username, email, address, phone } = await User.findById(userId);
+    const shipmentData = {
+      shipperId: shipperId,
+      shipperName: shipperName,
+      shipperPhone: shipperPhone,
+      shipperEmail: shipperEmail,
+      shipperAddress: shipperAddress,
+      origin: origin,
+      destination: destination,
+      shipmentType: shipmentType,
+      shipmentWeightVolume: shipmentWeightVolume,
+      pickupDateTime: pickupDateTime,
+      deliveryDateTime: deliveryDateTime,
+      addDetails: addDetails,
+    };
+    const carrierDetails = {
+      carrierName: username,
+      carrierPhone: phone,
+      carrierEmail: email,
+      carrierAddress: address,
+      bidAmount: bidAmount,
+    }
+    const updatedShipment = await Shipment.findOneAndUpdate(
+      shipmentData, 
+      { $set: carrierDetails }, 
+      { new: true } 
+    );
+
+    if (updatedShipment) {
+      return res.status(200).json({
+        msg: "carrierBidData updated successfully",
+      });
+    } else {
+      return res.status(404).json({
+        msg: "No matching shipment record found",
+      });
+    }
   } catch (error) {
     console.error("❌ Error adding carrierBidData ❌:", error);
     res.status(500).json({ msg: "Error in fetching carrierBidData data" });
