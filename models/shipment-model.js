@@ -1,6 +1,38 @@
 import mongoose from "mongoose";
 
 const shipmentSchema = new mongoose.Schema({
+  shipperId: {
+    type: mongoose.Schema.Types.ObjectId,
+    required: true,
+  },
+  shipperName: {
+    type: String,
+    required: true,
+  },
+  shipperEmail: {
+    type: String,
+    required: true,
+  },
+  shipperPhone: {
+    type: String,
+    required: true,
+  },
+  shipperAddress: {
+    type: String,
+    required: true,
+  },
+  carrierName: {
+    type: String,
+  },
+  carrierPhone: {
+    type: String,
+  },
+  carrierEmail: {
+    type: String,
+  },
+  carrierAddress: {
+    type: String,
+  },
   origin: {
     type: String,
     required: true,
@@ -15,17 +47,17 @@ const shipmentSchema = new mongoose.Schema({
   },
   shipmentWeightVolume: {
     type: String,
-    required: true,
   },
   pickupDateTime: {
     type: Date,
-    required: true,
   },
   deliveryDateTime: {
     type: Date,
-    required: true,
   },
   addDetails: {
+    type: String,
+  },
+  bidAmount: {
     type: String,
   },
 });
