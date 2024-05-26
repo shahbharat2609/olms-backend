@@ -1,3 +1,4 @@
+import axios from "axios";
 import Shipment from "../models/shipment-model.js";
 import User from "../models/user-model.js";
 
@@ -118,4 +119,69 @@ const dashboardData = async (req, res) => {
     });
   }
 };
-export { shipperShipmentData, carrierBidData, dashboardData };
+const pdfDownload = async (req, res) => {
+  try {
+    let loadPdfDownload = await Shipment.aggregate([
+      {
+        $project: {
+          shipperId: 1,
+          shipperName: 1,
+          shipperEmail: 1,
+          shipperAddress: 1,
+          shipperPhone: 1,
+          carrierName: 1,
+          carrierEmail: 1,
+          carrierAddress: 1,
+          carrierPhone: 1,
+          origin: 1,
+          destination: 1,
+          shipmentType: 1,
+          shipmentWeightVolume: 1,
+          pickupDateTime: {
+            $dateToString: { format: "%Y-%m-%d", date: "$pickupDateTime" },
+          },
+          deliveryDateTime: {
+            $dateToString: { format: "%Y-%m-%d", date: "$deliveryDateTime" },
+          },
+          bidAmount: 1,
+        },
+      },
+    ]);
+    console.log("loadpdf", loadPdfDownload);
+    const config = {
+      headers: {
+        "Content-Type": "application/json",
+      },
+      auth: {
+        username: "Bharat",
+        password: "bharat",
+      },
+      responseType: "arraybuffer",
+    };
+
+    axios
+      .post("http://192.168.1.6:8080/generate-pdf", loadPdfDownload, config)
+      .then((response) => {
+        const pdfData = response.data;
+
+        // const base64 = pdfData.toString("base64");
+
+
+        // res.set({
+        //   "Content-Type": "application/pdf",
+        //   "Content-Length": base64.length,
+        // });
+        // console.log("base", base64);
+        // res.send(base64);
+
+        
+      });
+  } catch (error) {
+    console.error("❌ Error retrieving pdfDownload data  ❌:", error);
+    res.status(500).json({
+      msg: "Failed to retrieve pdfDownload data ",
+      error: error.message,
+    });
+  }
+};
+export { shipperShipmentData, carrierBidData, dashboardData, pdfDownload };
