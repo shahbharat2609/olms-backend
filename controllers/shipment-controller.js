@@ -106,7 +106,7 @@ const carrierBidData = async (req, res) => {
 
 const dashboardData = async (req, res) => {
   try {
-    let shipmentDashboardData = await Shipment.find().select("-_id -__v");
+    let shipmentDashboardData = await Shipment.find().select("-__v");
     return res
       .status(200)
       .json({ msg: "Message sent successfully", data: shipmentDashboardData });
