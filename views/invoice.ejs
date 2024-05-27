@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Invoice</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+      .container {
+        padding: 20px;
+      }
+      .header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 20px 0;
+      }
+      .logo {
+        background-color: #ffd700;
+        padding: 10px;
+        font-weight: bold;
+      }
+      .title {
+        font-size: 36px;
+      }
+      .section {
+        margin: 20px 0;
+      }
+      .section h2 {
+        font-size: 24px;
+        margin-bottom: 10px;
+      }
+      .details {
+        display: flex;
+        justify-content: space-between;
+      }
+      .details div {
+        margin-right: 20px;
+      }
+      .details div:last-child {
+        margin-right: 0;
+      }
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        margin: 20px 0;
+      }
+      table,
+      th,
+      td {
+        border: 1px solid #ddd;
+      }
+      th,
+      td {
+        padding: 10px;
+        text-align: left;
+      }
+      .right-align {
+        text-align: right;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <div class="header">
+        <div class="logo">OPEN LOGISTICS</div>
+      </div>
+
+      <div class="title">INVOICE</div>
+
+      <div class="section">
+        <h2>Shipper Details</h2>
+        <div class="details">
+          <div>Name: <%= shipperName %></div>
+          <div>Address: <%= shipperAddress %></div>
+          <div>Phone: <%= shipperPhone %></div>
+          <div>Email: <%= shipperEmail %></div>
+        </div>
+      </div>
+
+      <div class="section">
+        <h2>Shipment Details</h2>
+        <table>
+          <thead>
+            <tr>
+              <th>Order Id</th>
+              <th>Origin</th>
+              <th>Destination</th>
+              <th>Type</th>
+              <th>Weight / Volume</th>
+              <th>Pickup Date/Time</th>
+              <th>Delivery Date/Time</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><%= orderId %></td>
+              <td><%= origin %></td>
+              <td><%= destination %></td>
+              <td><%= shipmentType %></td>
+              <td><%= shipmentWeightVolume %></td>
+              <td><%= pickupDateTime %></td>
+              <td><%= deliveryDateTime %></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="section">
+        <h2>Carrier Details</h2>
+        <div class="details">
+          <div>Name: <%= carrierName %></div>
+          <div>Address: <%= carrierAddress %></div>
+          <div>Phone: <%= carrierPhone %></div>
+          <div>Email: <%= carrierEmail %></div>
+        </div>
+      </div>
+
+      <div class="section">
+        <div class="right-align">Bid Amount: <%= bidAmount %></div>
+      </div>
+    </div>
+  </body>
+</html>
