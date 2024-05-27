@@ -1,7 +1,9 @@
 import axios from "axios";
 import Shipment from "../models/shipment-model.js";
 import User from "../models/user-model.js";
+import Stripe from "stripe";
 
+const stripe = new Stripe(process.env.STRIPE_PVT_KEY);
 const shipperShipmentData = async (req, res) => {
   try {
     let {
@@ -83,11 +85,11 @@ const carrierBidData = async (req, res) => {
       carrierEmail: email,
       carrierAddress: address,
       bidAmount: bidAmount,
-    }
+    };
     const updatedShipment = await Shipment.findOneAndUpdate(
-      shipmentData, 
-      { $set: carrierDetails }, 
-      { new: true } 
+      shipmentData,
+      { $set: carrierDetails },
+      { new: true }
     );
 
     if (updatedShipment) {
@@ -166,15 +168,12 @@ const pdfDownload = async (req, res) => {
 
         // const base64 = pdfData.toString("base64");
 
-
         // res.set({
         //   "Content-Type": "application/pdf",
         //   "Content-Length": base64.length,
         // });
         // console.log("base", base64);
         // res.send(base64);
-
-        
       });
   } catch (error) {
     console.error("❌ Error retrieving pdfDownload data  ❌:", error);
@@ -184,4 +183,47 @@ const pdfDownload = async (req, res) => {
     });
   }
 };
-export { shipperShipmentData, carrierBidData, dashboardData, pdfDownload };
+
+const paymentId = async (req, res) => {
+  try {
+    let {
+      shipperName,
+      shipmentType,
+      shipmentWeightVolume,
+      pickupDateTime,
+      deliveryDateTime,
+      bidAmount,
+    } = req.body;
+    const session = await stripe.checkout.sessions.create({
+      payment_method_types: ["card"],
+      line_items: [
+        {
+          price_data: {
+            currency: "INR",
+            product_data: {
+              name: shipperName,
+              description: `Shipment Type: ${shipmentType}\n Pickup: ${new Date(pickupDateTime).toLocaleDateString()}\n Delivery: ${new Date(deliveryDateTime).toLocaleDateString()}`
+            },
+            
+            unit_amount: parseInt(bidAmount/shipmentWeightVolume),
+          },
+          quantity: shipmentWeightVolume,
+        },
+      ],
+      mode: "payment",
+      success_url: `${process.env.FRONTEND_URL}/sucess`,
+      cancel_url: `${process.env.FRONTEND_URL}/cancel`,
+    });
+    return res
+      .status(200)
+      .json({ sessionId: session.id });
+  } catch (error) {
+    console.error("❌ Failed to create sessionId for stripe payment portal  ❌:", error);
+    res.status(500).json({
+      msg: "Failed to create sessionId for stripe payment portal ",
+      error: err.message,
+    });
+  }
+};
+
+export { shipperShipmentData, carrierBidData, dashboardData, pdfDownload, paymentId };
