@@ -166,14 +166,15 @@ const pdfDownload = async (req, res) => {
       .then((response) => {
         const pdfData = response.data;
 
-        // const base64 = pdfData.toString("base64");
+        const base64 = pdfData.toString("base64");
 
-        // res.set({
-        //   "Content-Type": "application/pdf",
-        //   "Content-Length": base64.length,
-        // });
-        // console.log("base", base64);
-        // res.send(base64);
+        res.set({
+          "Content-Type": "application/pdf",
+          "Content-Length": base64.length,
+        });
+
+        console.log("base", base64);
+        return res.status(200).send(base64);
       });
   } catch (error) {
     console.error("❌ Error retrieving pdfDownload data  ❌:", error);
@@ -183,6 +184,63 @@ const pdfDownload = async (req, res) => {
     });
   }
 };
+
+// const generateInvoice = async (req, res) => {
+//   try {
+//     const browser = await puppeteer.launch();
+//     const page = await browser.newPage();
+//     await page.goto(`{$req.protocol}://{$req.get("host")}` + "/invoice", {
+//       waitUntil: "networkidle2",
+//     });
+
+//     await page.setViewport({
+//       width: 210,
+//       height: 297,
+//     });
+
+//     const currentDate = new Date();
+
+//     const pdf = await page.pdf({
+//       path: `${path.join(
+//         __dirname,
+//         "../public/files",
+//         currentDate.getTime() + ".pdf"
+//       )}`,
+//       printBackground: true,
+//       format: "A4",
+//     });
+
+//     await browser.close();
+
+//     const pdfURL = path.join(
+//       __dirname,
+//       "../public/files",
+//       currentDate.getTime() + ".pdf"
+//     );
+
+//     // res.set({
+//     //   "Content-Type": "application/pdf",
+//     //   "Content-Length": pdf.length,
+//     // });
+
+//     // res.sendFile(pdfURL);
+
+//     res.download(pdfURL, function (err) {
+//       if (err) {
+//         res.status(500).json({
+//           msg: "Failed to retrieve generateInvoice ",
+//           error: err.message,
+//         });
+//       }
+//     });
+//   } catch (error) {
+//     console.error("❌ Error generating invoice  ❌:", error);
+//     res.status(500).json({
+//       msg: "Failed to retrieve generateInvoice ",
+//       error: err.message,
+//     });
+//   }
+// };
 
 const paymentId = async (req, res) => {
   try {
@@ -202,10 +260,14 @@ const paymentId = async (req, res) => {
             currency: "INR",
             product_data: {
               name: shipperName,
-              description: `Shipment Type: ${shipmentType}\n Pickup: ${new Date(pickupDateTime).toLocaleDateString()}\n Delivery: ${new Date(deliveryDateTime).toLocaleDateString()}`
+              description: `Shipment Type: ${shipmentType}\n Pickup: ${new Date(
+                pickupDateTime
+              ).toLocaleDateString()}\n Delivery: ${new Date(
+                deliveryDateTime
+              ).toLocaleDateString()}`,
             },
-            
-            unit_amount: parseInt(bidAmount/shipmentWeightVolume),
+
+            unit_amount: parseInt(bidAmount / shipmentWeightVolume),
           },
           quantity: shipmentWeightVolume,
         },
@@ -214,11 +276,12 @@ const paymentId = async (req, res) => {
       success_url: `${process.env.FRONTEND_URL}/success`,
       cancel_url: `${process.env.FRONTEND_URL}/cancel`,
     });
-    return res
-      .status(200)
-      .json({ sessionId: session.id });
+    return res.status(200).json({ sessionId: session.id });
   } catch (error) {
-    console.error("❌ Failed to create sessionId for stripe payment portal  ❌:", error);
+    console.error(
+      "❌ Failed to create sessionId for stripe payment portal  ❌:",
+      error
+    );
     res.status(500).json({
       msg: "Failed to create sessionId for stripe payment portal ",
       error: err.message,
@@ -226,4 +289,10 @@ const paymentId = async (req, res) => {
   }
 };
 
-export { shipperShipmentData, carrierBidData, dashboardData, pdfDownload, paymentId };
+export {
+  shipperShipmentData,
+  carrierBidData,
+  dashboardData,
+  pdfDownload,
+  paymentId,
+};
