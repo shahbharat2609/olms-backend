@@ -2,6 +2,14 @@ import axios from "axios";
 import Shipment from "../models/shipment-model.js";
 import User from "../models/user-model.js";
 import Stripe from "stripe";
+import fs from "fs-extra";
+import puppeteer from "puppeteer";
+import hbs from "handlebars";
+import { fileURLToPath } from "url";
+import path from "path";
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 const stripe = new Stripe(process.env.STRIPE_PVT_KEY);
 const shipperShipmentData = async (req, res) => {
@@ -185,62 +193,38 @@ const pdfDownload = async (req, res) => {
   }
 };
 
-// const generateInvoice = async (req, res) => {
-//   try {
-//     const browser = await puppeteer.launch();
-//     const page = await browser.newPage();
-//     await page.goto(`{$req.protocol}://{$req.get("host")}` + "/invoice", {
-//       waitUntil: "networkidle2",
-//     });
+const compile = async function (templateName, data) {
+  const filePath = path.join(process.cwd(), "templates", `${templateName}.hbs`);
+  const html = await fs.readFile(filePath, "utf-8");
+  return hbs.compile(html)(data);
+};
 
-//     await page.setViewport({
-//       width: 210,
-//       height: 297,
-//     });
-
-//     const currentDate = new Date();
-
-//     const pdf = await page.pdf({
-//       path: `${path.join(
-//         __dirname,
-//         "../public/files",
-//         currentDate.getTime() + ".pdf"
-//       )}`,
-//       printBackground: true,
-//       format: "A4",
-//     });
-
-//     await browser.close();
-
-//     const pdfURL = path.join(
-//       __dirname,
-//       "../public/files",
-//       currentDate.getTime() + ".pdf"
-//     );
-
-//     // res.set({
-//     //   "Content-Type": "application/pdf",
-//     //   "Content-Length": pdf.length,
-//     // });
-
-//     // res.sendFile(pdfURL);
-
-//     res.download(pdfURL, function (err) {
-//       if (err) {
-//         res.status(500).json({
-//           msg: "Failed to retrieve generateInvoice ",
-//           error: err.message,
-//         });
-//       }
-//     });
-//   } catch (error) {
-//     console.error("❌ Error generating invoice  ❌:", error);
-//     res.status(500).json({
-//       msg: "Failed to retrieve generateInvoice ",
-//       error: err.message,
-//     });
-//   }
-// };
+const generateInvoice = async (req, res) => {
+  try {
+    const browser = await puppeteer.launch();
+    const page = await browser.newPage();
+    const content = await compile("invoice", req.body);
+    await page.setContent(content);
+    await page.setViewport({
+      width: 1080,
+      height: 1080,
+    });
+    const result = await page.pdf({
+      printBackground: true,
+      format: "A4",
+    });
+    await browser.close();
+    res.contentType("application/pdf");
+    const base64 = result.toString('base64');
+    res.status(200).send(base64);
+  } catch (error) {
+    console.error("❌ Error generating invoice  ❌:", error);
+    res.status(500).json({
+      msg: "Failed to retrieve generateInvoice ",
+      error: err.message,
+    });
+  }
+};
 
 const paymentId = async (req, res) => {
   try {
@@ -295,4 +279,5 @@ export {
   dashboardData,
   pdfDownload,
   paymentId,
+  generateInvoice,
 };
