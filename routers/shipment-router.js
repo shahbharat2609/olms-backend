@@ -4,7 +4,7 @@ import {
   carrierBidData,
   dashboardData,
   shipperShipmentData,
-  pdfDownload,
+  generateInvoice,
   paymentId
 } from "../controllers/shipment-controller.js";
 
@@ -13,7 +13,7 @@ const router = express.Router();
 router.route("/loadPosting").post(authenticateToken, shipperShipmentData);
 router.route("/bidPortal").post(authenticateToken, carrierBidData);
 router.route("/payment").post(authenticateToken, paymentId);
-router.route("/download").post(authenticateToken, pdfDownload);
+router.route("/download").post(authenticateToken, generateInvoice);
 
 router.route("/dashboard").get(authenticateToken, dashboardData);
 
