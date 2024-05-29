@@ -5,40 +5,19 @@ import Stripe from "stripe";
 import fs from "fs-extra";
 import puppeteer from "puppeteer";
 import hbs from "handlebars";
-import { fileURLToPath } from "url";
 import path from "path";
-
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
 
 const stripe = new Stripe(process.env.STRIPE_PVT_KEY);
 const shipperShipmentData = async (req, res) => {
   try {
-    let {
-      shipperId,
-      origin,
-      destination,
-      shipmentType,
-      shipmentWeightVolume,
-      pickupDateTime,
-      deliveryDateTime,
-      addDetails,
-    } = req.body;
-
+    const { shipperId } = req.body
     const { username, email, address, phone } = await User.findById(shipperId);
     const shipmentData = {
-      shipperId: shipperId,
       shipperName: username,
       shipperPhone: phone,
       shipperEmail: email,
       shipperAddress: address,
-      origin: origin,
-      destination: destination,
-      shipmentType: shipmentType,
-      shipmentWeightVolume: shipmentWeightVolume,
-      pickupDateTime: pickupDateTime,
-      deliveryDateTime: deliveryDateTime,
-      addDetails: addDetails,
+      ...req.body,
     };
 
     await Shipment.create(shipmentData);
@@ -56,46 +35,18 @@ const shipperShipmentData = async (req, res) => {
 
 const carrierBidData = async (req, res) => {
   try {
-    let {
-      userId,
-      shipperId,
-      shipperName,
-      shipperEmail,
-      shipperPhone,
-      shipperAddress,
-      origin,
-      destination,
-      shipmentType,
-      shipmentWeightVolume,
-      pickupDateTime,
-      deliveryDateTime,
-      addDetails,
-      bidAmount,
-    } = req.body;
+    const { userId, bidAmount, ...reqBody } = req.body;
+    console.log(reqBody)
     const { username, email, address, phone } = await User.findById(userId);
-    const shipmentData = {
-      shipperId: shipperId,
-      shipperName: shipperName,
-      shipperPhone: shipperPhone,
-      shipperEmail: shipperEmail,
-      shipperAddress: shipperAddress,
-      origin: origin,
-      destination: destination,
-      shipmentType: shipmentType,
-      shipmentWeightVolume: shipmentWeightVolume,
-      pickupDateTime: pickupDateTime,
-      deliveryDateTime: deliveryDateTime,
-      addDetails: addDetails,
-    };
     const carrierDetails = {
       carrierName: username,
       carrierPhone: phone,
       carrierEmail: email,
       carrierAddress: address,
-      bidAmount: bidAmount,
+      bidAmount,
     };
     const updatedShipment = await Shipment.findOneAndUpdate(
-      shipmentData,
+      reqBody,
       { $set: carrierDetails },
       { new: true }
     );
@@ -201,22 +152,35 @@ const compile = async function (templateName, data) {
 
 const generateInvoice = async (req, res) => {
   try {
+    const { carrierId, ...reqBody } = req.body;
+    const { username, email, address, phone } = await User.findById(carrierId);
+    const invoiceDetails = {
+      carrierName: username,
+      carrierEmail: email,
+      carrierAddress: address,
+      carrierPhone: phone,
+      ...reqBody
+    }; 
     const browser = await puppeteer.launch();
     const page = await browser.newPage();
-    const content = await compile("invoice", req.body);
+    const content = await compile("invoice", invoiceDetails);
     await page.setContent(content);
     await page.setViewport({
       width: 1080,
       height: 1080,
     });
-    const result = await page.pdf({
+    const pdfBuffer = await page.pdf({
       printBackground: true,
       format: "A4",
     });
     await browser.close();
-    res.contentType("application/pdf");
-    const base64 = result.toString('base64');
-    res.status(200).send(base64);
+    res.set({
+      "Content-Type": "application/pdf",
+      "Content-Disposition": "attachment; filename=invoice.pdf",
+      "Content-Length": pdfBuffer.length,
+    });
+
+    res.status(200).send(pdfBuffer);
   } catch (error) {
     console.error("❌ Error generating invoice  ❌:", error);
     res.status(500).json({
