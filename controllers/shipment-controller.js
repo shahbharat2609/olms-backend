@@ -10,7 +10,7 @@ import path from "path";
 const stripe = new Stripe(process.env.STRIPE_PVT_KEY);
 const shipperShipmentData = async (req, res) => {
   try {
-    const { shipperId } = req.body
+    const { shipperId } = req.body;
     const { username, email, address, phone } = await User.findById(shipperId);
     const shipmentData = {
       shipperName: username,
@@ -36,7 +36,7 @@ const shipperShipmentData = async (req, res) => {
 const carrierBidData = async (req, res) => {
   try {
     const { userId, bidAmount, ...reqBody } = req.body;
-    console.log(reqBody)
+    console.log(reqBody);
     const { username, email, address, phone } = await User.findById(userId);
     const carrierDetails = {
       carrierName: username,
@@ -80,69 +80,69 @@ const dashboardData = async (req, res) => {
     });
   }
 };
-const pdfDownload = async (req, res) => {
-  try {
-    let loadPdfDownload = await Shipment.aggregate([
-      {
-        $project: {
-          shipperId: 1,
-          shipperName: 1,
-          shipperEmail: 1,
-          shipperAddress: 1,
-          shipperPhone: 1,
-          carrierName: 1,
-          carrierEmail: 1,
-          carrierAddress: 1,
-          carrierPhone: 1,
-          origin: 1,
-          destination: 1,
-          shipmentType: 1,
-          shipmentWeightVolume: 1,
-          pickupDateTime: {
-            $dateToString: { format: "%Y-%m-%d", date: "$pickupDateTime" },
-          },
-          deliveryDateTime: {
-            $dateToString: { format: "%Y-%m-%d", date: "$deliveryDateTime" },
-          },
-          bidAmount: 1,
-        },
-      },
-    ]);
-    console.log("loadpdf", loadPdfDownload);
-    const config = {
-      headers: {
-        "Content-Type": "application/json",
-      },
-      auth: {
-        username: "Bharat",
-        password: "bharat",
-      },
-      responseType: "arraybuffer",
-    };
+// const pdfDownload = async (req, res) => {
+//   try {
+//     let loadPdfDownload = await Shipment.aggregate([
+//       {
+//         $project: {
+//           shipperId: 1,
+//           shipperName: 1,
+//           shipperEmail: 1,
+//           shipperAddress: 1,
+//           shipperPhone: 1,
+//           carrierName: 1,
+//           carrierEmail: 1,
+//           carrierAddress: 1,
+//           carrierPhone: 1,
+//           origin: 1,
+//           destination: 1,
+//           shipmentType: 1,
+//           shipmentWeightVolume: 1,
+//           pickupDateTime: {
+//             $dateToString: { format: "%Y-%m-%d", date: "$pickupDateTime" },
+//           },
+//           deliveryDateTime: {
+//             $dateToString: { format: "%Y-%m-%d", date: "$deliveryDateTime" },
+//           },
+//           bidAmount: 1,
+//         },
+//       },
+//     ]);
+//     console.log("loadpdf", loadPdfDownload);
+//     const config = {
+//       headers: {
+//         "Content-Type": "application/json",
+//       },
+//       auth: {
+//         username: "Bharat",
+//         password: "bharat",
+//       },
+//       responseType: "arraybuffer",
+//     };
 
-    axios
-      .post("http://192.168.1.6:8080/generate-pdf", loadPdfDownload, config)
-      .then((response) => {
-        const pdfData = response.data;
+//     axios
+//       .post("http://192.168.1.6:8080/generate-pdf", loadPdfDownload, config)
+//       .then((response) => {
+//         const pdfData = response.data;
 
-        const base64 = pdfData.toString("base64");
+//         const base64 = pdfData.toString("base64");
 
-        res.set({
-          "Content-Type": "application/pdf",
-          "Content-Length": base64.length,
-        });
+//         res.set({
+//           "Content-Type": "application/pdf",
+//           "Content-Length": base64.length,
+//         });
 
-        console.log("base", base64);
-        return res.status(200).send(base64);
-      });
-  } catch (error) {
-    console.error("❌ Error retrieving pdfDownload data  ❌:", error);
-    res.status(500).json({
-      msg: "Failed to retrieve pdfDownload data ",
-      error: error.message,
-    });
-  }
-};
+//         console.log("base", base64);
+//         return res.status(200).send(base64);
+//       });
+//   } catch (error) {
+//     console.error("❌ Error retrieving pdfDownload data  ❌:", error);
+//     res.status(500).json({
+//       msg: "Failed to retrieve pdfDownload data ",
+//       error: error.message,
+//     });
+//   }
+// };
 
 const compile = async function (templateName, data) {
   const filePath = path.join(process.cwd(), "templates", `${templateName}.hbs`);
@@ -159,8 +159,8 @@ const generateInvoice = async (req, res) => {
       carrierEmail: email,
       carrierAddress: address,
       carrierPhone: phone,
-      ...reqBody
-    }; 
+      ...reqBody,
+    };
     const browser = await puppeteer.launch();
     const page = await browser.newPage();
     const content = await compile("invoice", invoiceDetails);
@@ -241,7 +241,6 @@ export {
   shipperShipmentData,
   carrierBidData,
   dashboardData,
-  pdfDownload,
   paymentId,
   generateInvoice,
 };
