@@ -21,9 +21,9 @@ app.use(express.urlencoded({ extended: true }));
 app.use(cors(corsOptions));
 app.use(cookieParser());
 
-// app.get("/", () => {
-//   console.log("WELCOME TO BACKEND");
-// });
+app.get("/", () => {
+  console.log("WELCOME TO BACKEND");
+});
 
 app.use("/api/auth", authRoute);
 app.use("/api/form", contactRoute);
