@@ -23,7 +23,7 @@ const register = async (req, res) => {
     }
     const userCreated = await User.create(post);
     const jwt = await userCreated.generateToken();
-    res.cookie("jwt", jwt, { maxAge: 36000, sameSite: "none", secure: true });
+    res.cookie("jwt", jwt, { maxAge: 36000, sameSite: "none", secure: true, httpOnly: false });
 
     res.status(201).json({
       msg: "User registered successfully",
@@ -62,6 +62,7 @@ const login = async (req, res) => {
         maxAge: 36000,
         sameSite: "none",
         secure: true,
+        httpOnly: false,
       });
       res.status(200).json(responseData);
     } else {
