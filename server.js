@@ -21,7 +21,7 @@ app.use(express.urlencoded({ extended: true }));
 app.use(cors(corsOptions));
 app.use(cookieParser());
 
-app.get("/", () => {
+app.get("/", (req, res) => {
   console.log("WELCOME TO BACKEND");
 });
 
