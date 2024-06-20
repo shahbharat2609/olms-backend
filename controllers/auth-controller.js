@@ -17,13 +17,13 @@ const register = async (req, res) => {
     console.log("✅✅✅", req.body);
 
     const userExist = await User.findOne({ email: post.email });
-    
+
     if (userExist) {
       return res.status(400).json({ msg: "User already exists" });
     }
     const userCreated = await User.create(post);
     const jwt = await userCreated.generateToken();
-    res.cookie("jwt", jwt, { maxAge: 36000 });
+    res.cookie("jwt", jwt, { maxAge: 36000, sameSight: "none", secure: true });
 
     res.status(201).json({
       msg: "User registered successfully",
@@ -58,7 +58,11 @@ const login = async (req, res) => {
         userId: userExist._id.toString(),
         roles: roles,
       };
-      res.cookie("jwt", token, { maxAge: 36000 });
+      res.cookie("jwt", token, {
+        maxAge: 36000,
+        sameSight: "none",
+        secure: true,
+      });
       res.status(200).json(responseData);
     } else {
       res.status(401).json({ msg: "Invalid e-mail or password" });
