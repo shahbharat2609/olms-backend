@@ -1,126 +1,93 @@
-<!DOCTYPE html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Invoice</title>
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
-    .container {
-      padding: 20px;
-    }
-    .header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding: 20px 0;
-    }
-    .logo {
-      background-color: #FFD700;
-      padding: 10px;
-      font-weight: bold;
-    }
-    .title {
-      font-size: 36px;
-    }
-    .section {
-      margin: 20px 0;
-    }
-    .section h2 {
-      font-size: 24px;
-      margin-bottom: 10px;
-    }
-    .details {
-      display: flex;
-      justify-content: space-between;
-    }
-    .details div {
-      margin-right: 20px;
-    }
-    .details div:last-child {
-      margin-right: 0;
-    }
-    table {
-      width: 100%;
-      border-collapse: collapse;
-      margin: 20px 0;
-    }
-    table, th, td {
-      border: 1px solid #ddd;
-    }
-    th, td {
-      padding: 10px;
-      text-align: left;
-    }
-    .right-align {
-      text-align: right;
-    }
-  </style>
-</head>
-<body>
-  <div class="container">
-    <div class="header">
-      <div class="logo">OPEN LOGISTICS</div>
-    </div>
-    
-    <div class="title">INVOICE</div>
-    
-    <div class="section">
-      <h2>Shipper Details</h2>
-      <div class="details">
-        <div>Name: {{shipperName}}</div>
-        <div>Address: {{shipperAddress}}</div>
-        <div>Phone: {{shipperPhone}}</div>
-        <div>Email: {{shipperEmail}}</div>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Invoice</title>
+    <style>
+      body { font-family: Arial, sans-serif; margin: 0; padding: 0; box-sizing:
+      border-box; background-color: #f8f8f8; } .container { padding: 40px;
+      background-color: white; width: 210mm; height: 297mm; margin: 0 auto;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); box-sizing: border-box; } .header
+      { display: flex; justify-content: space-between; align-items: center;
+      padding-bottom: 20px; border-bottom: 2px solid #ffcd29; } .logo {
+      background-color: #ffcd29; padding: 7px 20px; font-weight: bold;
+      font-size: 14px; border-radius: 5px; } .title { font-size: 40px;
+      font-weight: bold; margin-top: 20px; } .section { margin: 30px 0; }
+      .section h2 { font-size: 20px; margin-bottom: 10px; } .details { display:
+      flex; flex-direction: column; } .details div { margin-bottom: 5px;
+      font-size: 12px; } table { width: 100%; border-collapse: collapse; margin:
+      20px 0; font-size: 10px; } table, th, td { border: 1px solid #ddd; } th,
+      td { padding: 12px; text-align: left; } th { background-color: #ffcd29; }
+      .right-align { text-align: right; font-size: 15px; margin-top: 10px;
+      font-weight: bold; } .flex-container { display: flex; justify-content:
+      space-between; align-items: flex-start; } .flex-container .title,
+      .flex-container .shipper-details { flex: 1; } .shipper-details {
+      text-align: right; } .flex-container .title { padding-right: 20px; }
+      .flex-container .shipper-details .details { align-items: flex-end; }
+      .carrier-details { display: flex; justify-content: space-between;
+      align-items: flex-end; } .carrier-details .right-align { margin-top: 0; }
+      .shipment-details { text-align: right; } .shipment-details h2 {
+      text-align: left; }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <div class="header">
+        <div class="logo">OPEN LOGISTICS</div>
+      </div>
+
+      <div class="flex-container">
+        <div class="title">INVOICE</div>
+        <div class="shipper-details">
+          <div class="details">
+            <h2>Shipper Details</h2>
+            <div>Name: {{shipperName}}</div>
+            <div>Address: {{shipperAddress}}</div>
+            <div>Phone: {{shipperPhone}}</div>
+            <div>Email: {{shipperEmail}}</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="section">
+        <table>
+          <thead>
+            <tr>
+              <th>Order Id</th>
+              <th>Origin</th>
+              <th>Destination</th>
+              <th><center>Type</center></th>
+              <th><center>Weight / Volume</center></th>
+              <th><center>Pickup Date/Time</center></th>
+              <th><center>Delivery Date/Time</center></th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>{{invoiceId}}</td>
+              <td>{{origin}}</td>
+              <td>{{destination}}</td>
+              <td><center>{{shipmentType}}</center></td>
+              <td><center>{{shipmentWeightVolume}}</center></td>
+              <td><center>{{pickupDateTime}}</center></td>
+              <td><center>{{deliveryDateTime}}</center></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="section">
+        <h2>Carrier Details</h2>
+        <div class="carrier-details">
+          <div class="details">
+            <div>Name: {{carrierName}}</div>
+            <div>Address: {{carrierAddress}}</div>
+            <div>Phone: {{carrierPhone}}</div>
+            <div>Email: {{carrierEmail}}</div>
+          </div>
+          <div class="right-align">Bid Amount: ₹{{bidAmount}}</div>
+        </div>
       </div>
     </div>
-    
-    <div class="section">
-      <h2>Shipment Details</h2>
-      <table>
-        <thead>
-          <tr>
-            <th>Order Id</th>
-            <th>Origin</th>
-            <th>Destination</th>
-            <th>Type</th>
-            <th>Weight / Volume</th>
-            <th>Pickup Date/Time</th>
-            <th>Delivery Date/Time</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td>{{invoiceId}}</td>
-            <td>{{origin}}</td>
-            <td>{{destination}}</td>
-            <td>{{shipmentType}}</td>
-            <td>{{shipmentWeightVolume}}</td>
-            <td>{{pickupDateTime}}</td>
-            <td>{{deliveryDateTime}}</td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
-    
-    <div class="section">
-      <h2>Carrier Details</h2>
-      <div class="details">
-        <div>Name: {{carrierName}}</div>
-        <div>Address: {{carrierAddress}}</div>
-        <div>Phone: {{carrierPhone}}</div>
-        <div>Email: {{carrierEmail}}</div>
-      </div>
-    </div>
-    
-    <div class="section">
-      <div class="right-align">Bid Amount: ₹{{bidAmount}}</div>
-    </div>
-  </div>
-</body>
+  </body>
 </html>
